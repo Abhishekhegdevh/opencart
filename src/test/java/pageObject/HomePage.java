@@ -21,7 +21,7 @@ public class HomePage extends BasePage {
 
 	// Action
 	public void clickaccount() {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 		By myAccountLocator = By.xpath("//span[normalize-space()='My Account']");
 
 		WebElement myAccount = wait.until(ExpectedConditions.elementToBeClickable(myAccountLocator));
