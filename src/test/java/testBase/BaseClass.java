@@ -12,8 +12,8 @@ import java.util.Properties;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -27,7 +27,7 @@ import org.testng.annotations.Parameters;
 
 public class BaseClass {
 
-	public static WebDriver driver; 
+	public static WebDriver driver;
 	public Properties P;
 	public Logger logger;
 
@@ -44,14 +44,14 @@ public class BaseClass {
 		logger = LogManager.getLogger(this.getClass());
 
 		if (P.getProperty("execution_env").equalsIgnoreCase("remote")) {
-			
+
 			String hubURL = "http://192.168.0.102:4444/wd/hub"; // Verify this IP is correct!
 			logger.info("Connecting to Remote Grid at: " + hubURL);
 
 			// Selenium 4 uses Options, not DesiredCapabilities
 			if (br.equalsIgnoreCase("chrome")) {
 				ChromeOptions options = new ChromeOptions();
-				options.setPlatformName(getPlatformName(os)); 
+				options.setPlatformName(getPlatformName(os));
 				driver = new RemoteWebDriver(new URL(hubURL), options);
 
 			} else if (br.equalsIgnoreCase("edge")) {
@@ -64,14 +64,24 @@ public class BaseClass {
 			}
 
 		} else if (P.getProperty("execution_env").equalsIgnoreCase("local")) {
-			
+
 			logger.info("Launching local browser: " + br);
 			switch (br.toLowerCase()) {
 			case "chrome":
-				driver = new ChromeDriver();
+				ChromeOptions jenkinsOptions = new ChromeOptions();
+				jenkinsOptions.addArguments("--headless=new"); // Works in Jenkins
+				jenkinsOptions.addArguments("--window-size=1920,1080"); // Forces full-size desktop layout
+
+				driver = new ChromeDriver(jenkinsOptions);
+
+				driver.manage().window().setSize(new Dimension(1920, 1080));
 				break;
 			case "edge":
-				driver = new EdgeDriver();
+				EdgeOptions edOpts = new EdgeOptions();
+				edOpts.addArguments("--headless=new");
+				edOpts.addArguments("--window-size=1920,1080");
+				driver = new EdgeDriver(edOpts);
+				driver.manage().window().setSize(new Dimension(1920, 1080));
 				break;
 			default:
 				throw new IllegalArgumentException("Browser not supported: " + br);
@@ -84,17 +94,20 @@ public class BaseClass {
 		driver.get(P.getProperty("appURL"));
 		driver.manage().window().maximize();
 	}
-	
+
 	private String getPlatformName(String os) {
-		if (os.equalsIgnoreCase("windows")) return "Windows 11"; // Adjust strictly for Grid matching
-		if (os.equalsIgnoreCase("mac")) return "Mac";
-		if (os.equalsIgnoreCase("linux")) return "Linux";
+		if (os.equalsIgnoreCase("windows"))
+			return "Windows 11"; // Adjust strictly for Grid matching
+		if (os.equalsIgnoreCase("mac"))
+			return "Mac";
+		if (os.equalsIgnoreCase("linux"))
+			return "Linux";
 		return os;
 	}
 
 	@AfterClass(groups = { "Sanity", "Regression", "Master" })
 	public void logout() {
-		if (driver!= null) {
+		if (driver != null) {
 			driver.quit();
 		}
 	}
@@ -115,7 +128,8 @@ public class BaseClass {
 		String timeStamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
 		TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
 		File sourceFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
-		String targetFilePath = System.getProperty("user.dir") + File.separator + "screenshots" + File.separator + tname + "_" + timeStamp + ".png";
+		String targetFilePath = System.getProperty("user.dir") + File.separator + "screenshots" + File.separator + tname
+				+ "_" + timeStamp + ".png";
 		File targetFile = new File(targetFilePath);
 		sourceFile.renameTo(targetFile);
 		return targetFilePath;

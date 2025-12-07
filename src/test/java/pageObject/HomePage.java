@@ -1,12 +1,9 @@
 package pageObject;
 
-import java.time.Duration;
-
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HomePage extends BasePage {
 	// constructor
@@ -21,11 +18,10 @@ public class HomePage extends BasePage {
 
 	// Action
 	public void clickaccount() {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 		By myAccountLocator = By.xpath("//span[normalize-space()='My Account']");
-
-		WebElement myAccount = wait.until(ExpectedConditions.elementToBeClickable(myAccountLocator));
-		myAccount.click();
+		WebElement myAccount = driver.findElement(myAccountLocator);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("arguments[0].click();", myAccount);
 	}
 
 	public void clickregistor() {

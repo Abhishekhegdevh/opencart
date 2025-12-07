@@ -7,6 +7,7 @@ C:\Users\abhis\eclipse-workspace\opencart\src\test\java\testBase\BaseClass.java
 C:\Users\abhis\eclipse-workspace\opencart\src\test\java\testCases\TC_001_AccountRegisterPage.java
 C:\Users\abhis\eclipse-workspace\opencart\src\test\java\testCases\TC_002_DataDrivenTesting.java
 C:\Users\abhis\eclipse-workspace\opencart\src\test\java\testCases\TC_003_ExcelDataDriven.java
+C:\Users\abhis\eclipse-workspace\opencart\src\test\java\testCases\TC_004_Search.java
 C:\Users\abhis\eclipse-workspace\opencart\src\test\java\utilities\DataProviders.java
 C:\Users\abhis\eclipse-workspace\opencart\src\test\java\utilities\ExcelUtility.java
 C:\Users\abhis\eclipse-workspace\opencart\src\test\java\utilities\ExtentReportManager.java
